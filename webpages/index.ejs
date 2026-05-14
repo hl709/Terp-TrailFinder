@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trail Finder</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Trykker&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+    <div class="mainContainer">
+        <%- include("partials/header") %>
+        <div class="bannerContainer">
+            <img src="Lake-Artemesia-Natural-Area.jpg" id="mainPageImg" alt="Lake Artemesia Photo">
+            <div class="bannerTextContainer">
+                <h1 class="bannerText">Find your next good time!</h1>
+            </div>
+
+            <div class="formContainer">
+                <form action="http://localhost:5001/" method="post">
+                    <div class="countrySubdivisionContainer">
+                        <div>
+                            <b>Country:&nbsp;</b><input type="text" name="country" id="country" placeholder="country">
+                        </div>
+                        <div>
+                            <b>State/Province:&nbsp;</b><input type="text" name="state_province" id="state_province" placeholder="state/province">
+                            <p>US state or Canadian Provinces only</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <b>City:&nbsp;</b><input type="text" name="city" id="city" placeholder="city">
+                    </div>
+                    <div>
+                        <b>Activity Type:&nbsp;</b><input type="text" name="activity" id="activity" placeholder="activity">
+                        <p>Limited to hiking, mountain biking, camping, caving, trail running, snow sports, atv, or horseback riding</p>
+                    </div>
+
+                    <input type="submit" value="Search">
+                    <input type="reset" value="Clear">
+                </form>
+            </div>
+        </div>
+    </div>    
+</body>
+</html>
