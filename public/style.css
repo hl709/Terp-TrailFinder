@@ -84,3 +84,7 @@ form {
     justify-content: center;
     align-items: center;
 }
+
+.trailContent {
+    background-color: palegreen;
+}

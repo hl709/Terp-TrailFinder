@@ -6,7 +6,7 @@ require("dotenv").config({
 const mongoose = require("mongoose");
 
 const databaseName = "CMSC335DB";
-const collectionName = "campApplicants";
+const collectionName = "trailCollection";
 const uri = process.env.MONGO_CONNECTION_STRING;
 
 const bodyParser = require("body-parser");
@@ -63,6 +63,7 @@ app.get("/", async (request, response) => {
 });
 
 app.post("/", async (request, response) => {
+    let contentTemplate = ``;
     const city = request.body.city;
     const country = request.body.country;
     const state = request.body.state_province;
@@ -79,23 +80,61 @@ app.post("/", async (request, response) => {
     };
 
     try {
-        const response = await fetch(url, options);
-        const json = await response.json();
-        const resultString = JSON.stringify(json); // MUST EDIT STRING TO GET ARRAY
+        const promise = await fetch(url, options);
+        const json = await promise.json();
+        const resultString = JSON.stringify(json);
         const result = JSON.parse(resultString);
 
         // process.stdout.write(resultString);
         
-        for (const id in result) {
-            const trail = result[id];
+        if (result.hasOwnProperty("code")) {
+            return response.send("No results");
+        } else {
+            for (const id in result) {
+                const trail = result[id];
+                
+                contentTemplate += `
+                    <div class="trailContent">
+                        <p>ID: ${id}</p>
+                        <p>Name: ${trail.name}</p>
+                        <p>City: ${trail.city}</p>
+                        <p>State: ${trail.state}</p>
+                        <p>Country: ${trail.country}</p>
 
-            console.log("ID:", id);
-            console.log("Name:", trail.name);
-            console.log("City:", trail.city);
+                        
+                    </div>
+                `;
+            }
         }
     } catch (error) {
         console.error(error);
     }
 
-    response.render("suggestions");
+    const variables = {
+        content: contentTemplate
+    }
+
+    response.render("suggestions", variables);
 });
+
+app.post("/suggestions", (request, response) => {
+    addToFavorites();
+
+    response.status(200);
+});
+
+async function addToFavorites() {
+    try {
+        await client.connect();
+        const database = client.db(databaseName);
+        const collection = database.collection(collectionName);
+
+        /* Inserting one applicant */
+        const trail = { name: appName, email: appEmail, gpa: appGPA, backgroundInfo: appBackgroundInfo };
+        let result = await collection.insertOne(trail);
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
