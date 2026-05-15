@@ -14,9 +14,11 @@
     <div class="mainContainer">
         <%- include("partials/header") %>
 
-        <form action="http://localhost:5001/history" method="post">
+        <form action="http://localhost:5001/saved" method="post">
             <input type="submit" value="Clear history">
         </form>
+
+        <%- content %>
     </div>
 </body>
 </html>

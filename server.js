@@ -5,13 +5,6 @@ require("dotenv").config({
 
 const mongoose = require("mongoose");
 
-const trailSchema = new mongoose.Schema({
-    name: String,
-    city: String,
-    state: String,
-    country: String
-});
-
 const databaseName = "CMSC335DB";
 const collectionName = "trailCollection";
 const uri = process.env.MONGO_CONNECTION_STRING;
@@ -26,6 +19,7 @@ let portNumber = 5001;
 const saved = require("./routes/saved.js");
 const suggestions = require("./routes/suggestions");
 const current_trail = require("./routes/currentTrail.js");
+const Trail = require("./model/Trail.js");
 
 app.use("/saved", saved);
 app.use("/suggestions", suggestions);
@@ -104,7 +98,6 @@ app.post("/", async (request, response) => {
                 
                 contentTemplate += `
                     <div class="trailContent">
-                        <p>ID: ${id}</p>
                         <p>Name: ${trail.name}</p>
                         <p>City: ${trail.city}</p>
                         <p>State: ${trail.state}</p>
@@ -113,7 +106,6 @@ app.post("/", async (request, response) => {
                 `;
 
                 const trailObj = {
-                    id: trail.id,
                     name: trail.name,
                     city: trail.city,
                     state: trail.state,
@@ -139,8 +131,6 @@ app.post("/", async (request, response) => {
 async function insertTrails(trailArr) {
     try {
         await mongoose.connect(process.env.MONGO_CONNECTION_STRING);
-
-        const Trail = mongoose.model("Trail", trailSchema);
 
         for (let i = 0; i < trailArr.length; i++) {
             let elm = trailArr[i];
