@@ -85,8 +85,6 @@ app.post("/", async (request, response) => {
         const json = await promise.json();
         const resultString = JSON.stringify(json);
         const result = JSON.parse(resultString);
-
-        // process.stdout.write(resultString);
         
         if (result.hasOwnProperty("code")) {
             return response.send("No results");
