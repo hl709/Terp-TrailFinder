@@ -72,11 +72,15 @@ header a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+
+    margin-top: 3rem;
 }
 
-form {
+#indexForm {
     background-color: white;
-    width: 50rem;
+    width: 55rem;
+    border: 1px solid black;
+    border-radius: 1rem;
 }
 
 .countrySubdivisionContainer {
@@ -84,6 +88,14 @@ form {
     justify-content: center;
     align-items: center;
 }
+
+.buttonsContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Trails */
 
 .trailContent {
     background-color: palegreen;

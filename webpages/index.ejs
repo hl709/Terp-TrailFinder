@@ -20,27 +20,31 @@
             </div>
 
             <div class="formContainer">
-                <form action="https://terp-trailfinder.onrender.com/" method="post">
+                <form id="indexForm" action="https://terp-trailfinder.onrender.com/" method="post">
                     <div class="countrySubdivisionContainer">
-                        <div>
+                        <div class="fieldContainer">
                             <b>Country:&nbsp;</b><input type="text" name="country" id="country" placeholder="country" required>
                         </div>
-                        <div>
+                        <div class="fieldContainer">
                             <b>State/Province:&nbsp;</b><input type="text" name="state_province" id="state_province" placeholder="state/province" required>
-                            <p>US state or Canadian Provinces only</p>
                         </div>
+                        <p>US state or Canadian Provinces only</p>
                     </div>
 
-                    <div>
-                        <b>City:&nbsp;</b><input type="text" name="city" id="city" placeholder="city" required>
-                    </div>
-                    <div>
-                        <b>Activity Type:&nbsp;</b><input type="text" name="activity" id="activity" placeholder="activity" required>
+                    <div class="cityActivityContainer">
+                        <div class="fieldContainer">
+                            <b>City:&nbsp;</b><input type="text" name="city" id="city" placeholder="city" required>
+                        </div>
+                        <div class="fieldContainer">
+                            <b>Activity Type:&nbsp;</b><input type="text" name="activity" id="activity" placeholder="activity" required>
+                        </div>
                         <p>Limited to hiking, mountain biking, camping, caving, trail running, snow sports, atv, or horseback riding</p>
                     </div>
 
-                    <input type="submit" value="Search">
-                    <input type="reset" value="Clear">
+                    <div class="buttonsContainer">
+                        <input type="submit" value="Search">
+                        <input type="reset" value="Clear">
+                    </div>
                 </form>
             </div>
         </div>

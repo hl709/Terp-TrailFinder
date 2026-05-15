@@ -1,4 +1,6 @@
 const path = require("path");
+
+/* Comment out when deploying */
 // require("dotenv").config({
 //    path: path.resolve(__dirname, ".env"),
 // });
@@ -87,7 +89,7 @@ app.post("/", async (request, response) => {
         const result = JSON.parse(resultString);
         
         if (result.hasOwnProperty("code")) {
-            return response.send("No results");
+            contentTemplate = `<h1>No results</h1>`;
         } else {
             let trailArr = [];
 
