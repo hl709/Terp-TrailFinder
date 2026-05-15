@@ -5,6 +5,13 @@ require("dotenv").config({
 
 const mongoose = require("mongoose");
 
+const trailSchema = new mongoose.Schema({
+    name: String,
+    city: String,
+    state: String,
+    country: String
+});
+
 const databaseName = "CMSC335DB";
 const collectionName = "trailCollection";
 const uri = process.env.MONGO_CONNECTION_STRING;
@@ -16,11 +23,11 @@ const express = require("express");
 const app = express();
 let portNumber = 5001;
 
-const favorites = require("./routes/favorites");
+const saved = require("./routes/saved.js");
 const suggestions = require("./routes/suggestions");
 const current_trail = require("./routes/currentTrail.js");
 
-app.use("/favorites", favorites);
+app.use("/saved", saved);
 app.use("/suggestions", suggestions);
 app.use("/current-trail", current_trail);
 
@@ -90,6 +97,8 @@ app.post("/", async (request, response) => {
         if (result.hasOwnProperty("code")) {
             return response.send("No results");
         } else {
+            let trailArr = [];
+
             for (const id in result) {
                 const trail = result[id];
                 
@@ -100,11 +109,21 @@ app.post("/", async (request, response) => {
                         <p>City: ${trail.city}</p>
                         <p>State: ${trail.state}</p>
                         <p>Country: ${trail.country}</p>
-
-                        
                     </div>
                 `;
+
+                const trailObj = {
+                    id: trail.id,
+                    name: trail.name,
+                    city: trail.city,
+                    state: trail.state,
+                    country: trail.country
+                };
+            
+                trailArr.push(trailObj);
             }
+
+            insertTrails(trailArr);
         }
     } catch (error) {
         console.error(error);
@@ -117,24 +136,28 @@ app.post("/", async (request, response) => {
     response.render("suggestions", variables);
 });
 
-app.post("/suggestions", (request, response) => {
-    addToFavorites();
-
-    response.status(200);
-});
-
-async function addToFavorites() {
+async function insertTrails(trailArr) {
     try {
-        await client.connect();
-        const database = client.db(databaseName);
-        const collection = database.collection(collectionName);
+        await mongoose.connect(process.env.MONGO_CONNECTION_STRING);
 
-        /* Inserting one applicant */
-        const trail = { name: appName, email: appEmail, gpa: appGPA, backgroundInfo: appBackgroundInfo };
-        let result = await collection.insertOne(trail);
+        const Trail = mongoose.model("Trail", trailSchema);
+
+        for (let i = 0; i < trailArr.length; i++) {
+            let elm = trailArr[i];
+
+            const trail = new Trail({
+                id: elm.id,
+                name: elm.name,
+                city: elm.city,
+                state: elm.state,
+                country: elm.country
+            });
+
+            await trail.save();
+        }
+
+        mongoose.disconnect();
     } catch (e) {
         console.error(e);
-    } finally {
-        await client.close();
     }
 }
