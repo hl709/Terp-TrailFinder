@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Trykker&display=swap");
+
 body {
     margin: 0;
 }
@@ -85,8 +87,26 @@ header a:hover {
 
 .countrySubdivisionContainer {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+}
+
+.scfieldContainer {
+    margin-left: 1rem;
+}
+
+.cityActivityContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.cafieldContainer {
+    margin-left: 1rem;
+}
+
+#activityText {
+    margin-left: 1rem;
 }
 
 .buttonsContainer {

@@ -1,9 +1,9 @@
 const path = require("path");
 
 /* Comment out when deploying */
-// require("dotenv").config({
-//    path: path.resolve(__dirname, ".env"),
-// });
+require("dotenv").config({
+   path: path.resolve(__dirname, ".env"),
+});
 
 const mongoose = require("mongoose");
 
