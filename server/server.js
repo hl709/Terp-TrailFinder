@@ -16,7 +16,7 @@ const uri = process.env.MONGO_CONNECTION_STRING;
 /* Using Express */
 const express = require("express");
 const app = express();
-let portNumber = 5001;
+let portNumber = 7003;
 const multer = require("multer"); /* Handles processing form data */
 
 /* Body Parser */
@@ -50,20 +50,9 @@ const Trail = require("./model/Trail.js");
 app.use("/saved", saved);
 app.use("/suggestions", suggestions);
 
-// Displays home page of index.ejs
-app.get("/", async (request, response) => {
-    response.render("index");
-});
-
-app.post("/suggestions", upload.none(), async (request, response) => {
-    let contentTemplate = ``;
-    const city = request.body.city;
-    const country = request.body.country;
-    const state = request.body.state;
-    const activity = request.body.activity;
-
-    const url = `https://trailapi-trailapi.p.rapidapi.com/activity/?lat=1&limit=5&lon=1&q-city_cont=${city}&q-country_cont=${country}&q-state_cont=${state}&radius=25&q-activities_activity_type_name_eq=${activity}`;
-    const options = {
+app.get("/suggestions", async (request, response) => {
+    const URL = `https://trailapi-trailapi.p.rapidapi.com/activity/?lat=1&limit=5&lon=1&q-city_cont=${request.query.city}&q-country_cont=${request.query.country}&q-state_cont=${request.query.state}&radius=25&q-activities_activity_type_name_eq=${request.query.activity}`;
+    const OPTIONS = {
         method: 'GET',
         headers: {
             'x-rapidapi-key': 'ce7d3eb001msh889da79cb4259cdp17eed4jsn5f04e454a884',
@@ -71,8 +60,11 @@ app.post("/suggestions", upload.none(), async (request, response) => {
             'Content-Type': 'application/json'
         }
     };
+    
+    const promise = await fetch(URL, OPTIONS);
+    const json = await promise.json();
 
-    response.send(`YES: ${request.country}, ${request.state}, ${request.city}, ${request.activity}`);
+    return response.send(json);
 });
 
 async function insertTrails(trailArr) {

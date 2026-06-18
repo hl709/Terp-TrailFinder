@@ -3,7 +3,6 @@ import { useState, useEffect } from "react"
 import '../css/index.css'
 import Header from '../partials/Header.jsx'
 import TrailCard from '../components/TrailCard.jsx';
-import { getTrails } from '../services/api.js'
 
 function Suggestions() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -12,24 +11,30 @@ function Suggestions() {
     const city = searchParams.get("city");
     const activity = searchParams.get("activity");
     const [trails, setTrails] = useState([]);
-
+    
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchTrails = async () => {
+            const endpoint = `http://localhost:7003/suggestions?country=${encodeURIComponent(country)}&state=${encodeURIComponent(state)}&city=${encodeURIComponent(city)}&activity=${activity}`; // URL to send request to
+            
             try {
-                const result = await getTrails(country, state, city, activity);
+                const response = await fetch(endpoint); // returns a Response object with type 'cors'
+                let result = await response.json(); // parses Response object for json
+                
                 let trailArr = [];
 
-                for (const id in result) {
-                    const trail = result[id];
+                if (!result.hasOwnProperty("code")) {
+                    for (const id in result) {
+                        const trail = result[id];
 
-                    const trailObj = {
-                        name: trail.name,
-                        city: trail.city,
-                        state: trail.state,
-                        country: trail.country
-                    };
-                
-                    trailArr.push(trailObj);
+                        const trailObj = {
+                            name: trail.name,
+                            city: trail.city,
+                            state: trail.state,
+                            country: trail.country
+                        };
+                    
+                        trailArr.push(trailObj);
+                    }
                 }
 
                 setTrails(trailArr);
@@ -38,21 +43,25 @@ function Suggestions() {
             }
         }
 
-        fetchData();
+        fetchTrails();
     }, []);
 
     return (
-        <>
-            <div className="mainContainer">
-                <Header />
+        <div className="mainContainer">
+            <Header />
 
-                <div className="display">
-                    {trails.map((trail) => ( // Has to be map since foor loop isn't considered a JS expression
-                        <TrailCard trail={trail} key={trail.name} />
-                    ))}
-                </div>
+            <div className="display">
+                {trails.length == 0 ? ( // Conditional rendering
+                    <p>No results found...</p>
+                ) : (
+                    <div className="trailcard-container">
+                        {trails.map((trail) => ( // Has to be map since foor loop isn't considered a JS expression
+                            <TrailCard trail={trail} key={trail.name} />
+                        ))}
+                    </div>
+                )}
             </div>
-        </>
+        </div>
     )
 }
 
