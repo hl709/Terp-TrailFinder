@@ -1,18 +1,60 @@
+import { useState, useEffect } from 'react'
 import '../css/index.css'
 import Header from '../partials/Header.jsx'
+import TrailCard from '../components/TrailCard.jsx'
 
 function Saved() {
-    return (
-        <>
-            <div className="mainContainer">
-                <Header />
-                    <form action="http://localhost:5173/saved" method="post">
-                        <input type="submit" value="Clear history"/>
-                    </form>
+    const [trails, setTrails] = useState([]);
 
-                    {/* <%- content %> */}
+    useEffect(() => {
+        const fetchTrails = async () => {
+            const endpoint = 'http://localhost:7003/saved';
+
+            try {
+                const response = await fetch(endpoint); // Returns a Response object
+                const result = await response.json(); // Parses Response for JSON
+
+                let trailArr = [];
+
+                for (const id in result) {
+                    const trail = result[id];
+
+                    const trailObj = {
+                        name: trail.name,
+                        city: trail.city,
+                        state: trail.state,
+                        country: trail.country
+                    };
+                
+                    trailArr.push(trailObj);
+                }
+
+                setTrails(trailArr);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        fetchTrails();
+    }, []);
+
+    return (
+        <div className="mainContainer">
+            <Header />
+                <form action="http://localhost:5173/processremoved" method="get">
+                    <input type="submit" value="Clear history"/>
+                </form>
+
+                {trails.length == 0 ? (
+                    <p>No trails saved...</p>
+                ) : (
+                    <div className="trailcard-container">
+                        {trails.map((trail) => ( // Has to be map since foor loop isn't considered a JS expression
+                            <TrailCard trail={trail} key={trail.name} />
+                        ))}
+                    </div>
+                )}
             </div>
-        </>
     )
 }
 

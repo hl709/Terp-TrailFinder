@@ -13,27 +13,26 @@ const router = express.Router();
 const Trail = require("../model/Trail.js");
 
 router.get("/", async (request, response) => {
-    let trails = await getTrails();
-    let contentTemplate = ``;
+    let trails = await getTrails(); // Returns an array of trails from DB
+    let trailArr = [];
 
     for (let i = 0; i < trails.length; i++) {
         let trail = trails[i];
 
-        contentTemplate += `
-            <div class="trailContent">
-                <p>Name: ${trail.name}</p>
-                <p>City: ${trail.city}</p>
-                <p>State: ${trail.state}</p>
-                <p>Country: ${trail.country}</p>
-            </div>
-        `;
+        const trailObj = {
+            name: trail.name,
+            city: trail.city,
+            state: trail.state,
+            country: trail.country
+        };
+                
+        trailArr.push(trailObj);
     }
 
-    const variables = {
-        content: contentTemplate
-    };
+    let toJSONArrStr = JSON.stringify(trailArr);
+    let JSONArr = JSON.parse(toJSONArrStr);
 
-    response.render("saved", variables);
+    return response.send(JSONArr);
 });
 
 async function getTrails() {
@@ -45,26 +44,6 @@ async function getTrails() {
         mongoose.disconnect();
 
         return trails;
-    } catch (err) {
-        console.error(err);
-    }
-}
-
-router.post("/", (request, response) => {
-    removeAll();
-
-    response.redirect("/");
-});
-
-async function removeAll() {
-    try {
-        await mongoose.connect(process.env.MONGO_CONNECTION_STRING);
-
-        const result = await Trail.deleteMany({});
-
-        mongoose.disconnect();
-
-        return result;
     } catch (err) {
         console.error(err);
     }

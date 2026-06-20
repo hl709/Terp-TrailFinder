@@ -64,6 +64,25 @@ app.get("/suggestions", async (request, response) => {
     const promise = await fetch(URL, OPTIONS);
     const json = await promise.json();
 
+    if (!json.hasOwnProperty("code")) {
+        let trailArr = [];
+
+        for (const id in json) {
+            const trail = json[id];
+
+            const trailObj = {
+                name: trail.name,
+                city: trail.city,
+                state: trail.state,
+                country: trail.country
+            };
+                    
+            trailArr.push(trailObj);
+        }
+
+        insertTrails(trailArr);
+    }
+
     return response.send(json);
 });
 
@@ -88,6 +107,27 @@ async function insertTrails(trailArr) {
         mongoose.disconnect();
     } catch (e) {
         console.error(e);
+    }
+}
+
+router.get("/processremoved", (request, response) => {
+    removeAll();
+    console.log("HERE");
+
+    response.redirect("/");
+});
+
+async function removeAll() {
+    try {
+        await mongoose.connect(process.env.MONGO_CONNECTION_STRING);
+
+        const result = await Trail.deleteMany({});
+
+        mongoose.disconnect();
+
+        return result;
+    } catch (err) {
+        console.error(err);
     }
 }
 
