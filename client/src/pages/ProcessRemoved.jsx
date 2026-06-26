@@ -1,6 +1,21 @@
 import Header from '../partials/Header'
+import { useEffect } from 'react'
 
 function ProcessRemoved() {
+    useEffect(() => {
+        const deleteTrails = async () => {
+            const endpoint = 'http://localhost:7003/processremoved';
+
+            try {
+                const response = await fetch(endpoint);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        deleteTrails();
+    }, []);
+
     return (
         <div>
             <Header />

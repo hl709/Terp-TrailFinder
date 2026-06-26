@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from "react-router";
 import '../css/index.css'
 import Header from '../partials/Header.jsx'
 import TrailCard from '../components/TrailCard.jsx'
 
 function Saved() {
     const [trails, setTrails] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchTrails = async () => {
@@ -38,10 +40,15 @@ function Saved() {
         fetchTrails();
     }, []);
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        navigate("/processremoved");
+    }
+
     return (
         <div className="mainContainer">
             <Header />
-                <form action="http://localhost:5173/processremoved" method="get">
+                <form action="/processremoved" method="get" onSubmit={handleSubmit}>
                     <input type="submit" value="Clear history"/>
                 </form>
 

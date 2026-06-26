@@ -110,11 +110,10 @@ async function insertTrails(trailArr) {
     }
 }
 
-router.get("/processremoved", (request, response) => {
+app.get("/processremoved", (request, response) => {
     removeAll();
-    console.log("HERE");
 
-    response.redirect("/");
+    response.send("Success");
 });
 
 async function removeAll() {
