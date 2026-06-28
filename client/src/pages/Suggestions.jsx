@@ -30,7 +30,10 @@ function Suggestions() {
                             name: trail.name,
                             city: trail.city,
                             state: trail.state,
-                            country: trail.country
+                            country: trail.country,
+                            description: trail.description,
+                            directions: trail.directions,
+                            activities: trail.activities
                         };
                     
                         trailArr.push(trailObj);
@@ -54,9 +57,9 @@ function Suggestions() {
                 {trails.length == 0 ? ( // Conditional rendering
                     <p>No results found...</p>
                 ) : (
-                    <div className="trailcard-container">
+                    <div className="flex flex-col justify-center items-center">
                         {trails.map((trail) => ( // Has to be map since foor loop isn't considered a JS expression
-                            <TrailCard trail={trail} key={trail.name} />
+                            <TrailCard trail={trail} activity={activity} key={trail.name} />
                         ))}
                     </div>
                 )}

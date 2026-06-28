@@ -25,7 +25,10 @@ function Saved() {
                         name: trail.name,
                         city: trail.city,
                         state: trail.state,
-                        country: trail.country
+                        country: trail.country,
+                        description: trail.description,
+                        directions: trail.directions,
+                        activities: trail.activities
                     };
                 
                     trailArr.push(trailObj);
@@ -55,9 +58,9 @@ function Saved() {
                 {trails.length == 0 ? (
                     <p>No trails saved...</p>
                 ) : (
-                    <div className="trailcard-container">
+                    <div className="w-full flex flex-col justify-center items-center">
                         {trails.map((trail) => ( // Has to be map since foor loop isn't considered a JS expression
-                            <TrailCard trail={trail} key={trail.name} />
+                            <TrailCard trail={trail} activity={"any"} key={trail.name} />
                         ))}
                     </div>
                 )}

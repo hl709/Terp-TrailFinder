@@ -23,7 +23,10 @@ router.get("/", async (request, response) => {
             name: trail.name,
             city: trail.city,
             state: trail.state,
-            country: trail.country
+            country: trail.country,
+            description: trail.description,
+            directions: trail.directions,
+            activities: trail.activities
         };
                 
         trailArr.push(trailObj);

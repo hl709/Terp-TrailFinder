@@ -7,7 +7,7 @@ function ProcessRemoved() {
             const endpoint = 'http://localhost:7003/processremoved';
 
             try {
-                const response = await fetch(endpoint);
+                const response = await fetch(endpoint); // Need to fetch
             } catch (error) {
                 console.error(error);
             }
