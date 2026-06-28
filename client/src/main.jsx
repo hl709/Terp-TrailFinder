@@ -5,6 +5,7 @@ import Home from './pages/Home.jsx'
 import Saved from './pages/Saved.jsx'
 import Suggestions from './pages/Suggestions.jsx'
 import ProcessRemoved from './pages/ProcessRemoved.jsx'
+import { TrailCardProvider } from './context/TrailCardContext.jsx';
 
 const router = createBrowserRouter([
   {path: "/", element: <Home />},
@@ -14,5 +15,7 @@ const router = createBrowserRouter([
 ])
 
 createRoot(document.getElementById('root')).render(
-  <RouterProvider router={router} />
+  <TrailCardProvider>
+    <RouterProvider router={router} />
+  </TrailCardProvider>
 )

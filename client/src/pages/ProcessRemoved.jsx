@@ -1,3 +1,4 @@
+import '../css/index.css'
 import Header from '../partials/Header'
 import { useEffect } from 'react'
 

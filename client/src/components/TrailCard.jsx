@@ -1,11 +1,16 @@
 import { useState, useEffect } from "react";
+import { useTrailCardContext } from "../context/TrailCardContext";
 
 function TrailCard({ trail, activity }) { // "activity": "hiking", "camping", etc or "any"
     const [trailLength, setTrailLength] = useState("0");
     const [description, setDescription] = useState("No description available"); // Trail description for a specific activity may differ from the trail in general
     const [rating, setRating] = useState("0.00");
+
+    const { addToSaved, removeFromSaved, isSaved } = useTrailCardContext();
+    const saved = isSaved(trail.name);
     
-    useEffect(() => { // useEffect synchronizes component with external system, MORE
+    useEffect(() => { // useEffect synchronizes component with external system
+        // Gets values from keys from "activity" (e.g. hiking, camping) key
         const setData = () => {
             if (activity != "any") {
                 setTrailLength(trail.activities[activity]["length"]);
@@ -23,6 +28,11 @@ function TrailCard({ trail, activity }) { // "activity": "hiking", "camping", et
         setData();
     }, [])
 
+    const onSaveClick = (event) => {
+        event.preventDefault();
+        saved ? removeFromSaved(trail.name) : addToSaved(trail);
+    }
+
     return (
         <div className="bg-green-200 w-95/100 rounded-2xl mt-8">
             <div className="px-8 py-4">
@@ -34,6 +44,10 @@ function TrailCard({ trail, activity }) { // "activity": "hiking", "camping", et
                 </div>
                 <p>Description: {trail.description}</p>
             </div>
+
+            <button className={`save-btn ${saved ? "active" : ""}`} onClick={onSaveClick}>
+                Save ♡
+            </button>
         </div>
     )
 }
