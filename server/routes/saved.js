@@ -34,7 +34,7 @@ router.get("/", async (request, response) => {
 
     let toJSONArrStr = JSON.stringify(trailArr);
     let JSONArr = JSON.parse(toJSONArrStr);
-
+    
     return response.send(JSONArr);
 });
 
@@ -42,6 +42,8 @@ async function getTrails() {
     try {
         await mongoose.connect(process.env.MONGO_CONNECTION_STRING);
 
+        // "db.collection.find" is a MongoDB method
+        // Returns all documents in the database
         const trails = await Trail.find({});
 
         mongoose.disconnect();

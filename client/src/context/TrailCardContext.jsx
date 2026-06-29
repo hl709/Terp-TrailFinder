@@ -10,12 +10,43 @@ export const useTrailCardContext = () => useContext(TrailCardContext);
 export const TrailCardProvider = ({children}) => {
     const [saved, setSaved] = useState([]);
 
-    // Add to DB
+    // Retrieve from DB
     useEffect(() => {
-        
+        const fetchTrails = async () => {
+            const endpoint = 'http://localhost:7003/saved';
+
+            try {
+                const response = await fetch(endpoint); // Returns a Response object
+                const result = await response.json(); // Parses Response for JSON
+
+                let trailArr = [];
+
+                for (const id in result) {
+                    const trail = result[id];
+
+                    const trailObj = {
+                        name: trail.name,
+                        city: trail.city,
+                        state: trail.state,
+                        country: trail.country,
+                        description: trail.description,
+                        directions: trail.directions,
+                        activities: trail.activities
+                    };
+                
+                    trailArr.push(trailObj);
+                }
+
+                setSaved(trailArr);
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        fetchTrails();
     }, []);
 
-    // Retrieve from DB
+    // Add or remove from DB
     useEffect(() => { // Only called when the "saved" array is changed
 
     }, [saved]);
