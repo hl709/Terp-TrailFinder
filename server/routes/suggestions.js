@@ -26,56 +26,7 @@ router.get("/", async (request, response) => {
     const promise = await fetch(URL, OPTIONS);
     const json = await promise.json();
 
-    if (!json.hasOwnProperty("code")) {
-        let trailArr = [];
-
-        for (const id in json) {
-            const trail = json[id];
-
-            const trailObj = {
-                name: trail.name,
-                city: trail.city,
-                state: trail.state,
-                country: trail.country,
-                description: trail.description,
-                directions: trail.directions,
-                activities: trail.activities
-            };
-                    
-            trailArr.push(trailObj);
-        }
-
-        insertTrails(trailArr);
-    }
-
     return response.send(json);
 });
-
-async function insertTrails(trailArr) {
-    try {
-        await mongoose.connect(process.env.MONGO_CONNECTION_STRING);
-
-        for (let i = 0; i < trailArr.length; i++) {
-            let elm = trailArr[i];
-
-            const trail = new Trail({
-                id: elm.id,
-                name: elm.name,
-                city: elm.city,
-                state: elm.state,
-                country: elm.country,
-                description: elm.description,
-                directions: elm.directions,
-                activities: elm.activities
-            });
-
-            await trail.save();
-        }
-
-        mongoose.disconnect();
-    } catch (e) {
-        console.error(e);
-    }
-}
 
 module.exports = router;

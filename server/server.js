@@ -21,8 +21,10 @@ let portNumber = 7003;
 
 /* Body Parser */
 const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended: false}));
-process.stdin.setEncoding("utf8");
+const jsonParser = bodyParser.json(); // create application/json parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); 
+process.stdin.setEncoding("utf8"); // important
 process.stdin.on('readable', () => { /* on equivalent to addEventListener */
     const dataInput = process.stdin.read();
 
@@ -39,7 +41,6 @@ process.stdin.on('readable', () => { /* on equivalent to addEventListener */
 /* CORS */
 const cors = require("cors");
 app.use(cors()); /* Allows all origins to access the server */
-app.use(express.json());
 // const upload = multer();
 
 /* Routes */
@@ -49,6 +50,72 @@ const Trail = require("./model/Trail.js");
 
 app.use("/saved", saved);
 app.use("/suggestions", suggestions);
+
+app.post("/add-to-saved", (request, response) => {
+    const json = request.body; // Receiving the entire saved array from TrailCardContext.jsx
+
+    let trailArr = [];
+
+    for (const id in json) {
+        const trail = json[id];
+
+        const trailObj = {
+            name: trail.name,
+            city: trail.city,
+            state: trail.state,
+            country: trail.country,
+            description: trail.description,
+            directions: trail.directions,
+            activities: trail.activities
+        };
+                    
+        trailArr.push(trailObj);
+    }
+
+    insertTrails(trailArr);
+
+    response.send("Success");
+});
+
+async function insertTrails(trailArr) {
+    try {
+        await mongoose.connect(process.env.MONGO_CONNECTION_STRING);
+
+        for (let i = 0; i < trailArr.length; i++) {
+            let elm = trailArr[i];
+
+            const trail = new Trail({
+                id: elm.id,
+                name: elm.name,
+                city: elm.city,
+                state: elm.state,
+                country: elm.country,
+                description: elm.description,
+                directions: elm.directions,
+                activities: elm.activities,
+            });
+
+            await Trail.updateOne(
+                { name: elm.name },
+                {$set:
+                    {
+                        city: elm.city,
+                        state: elm.state,
+                        country: elm.country,
+                        description: elm.description,
+                        directions: elm.directions,
+                        activities: elm.activities
+                    }
+                },
+                { upsert: true }
+            );
+        }
+
+        mongoose.disconnect();
+    } catch (e) {
+        console.error(e);
+    }
+}
 
 app.get("/processremoved", (request, response) => {
     removeAll();

@@ -44,29 +44,52 @@ export const TrailCardProvider = ({children}) => {
         }
 
         fetchTrails();
-    }, []);
+    }, []); // Saved trails is loaded immediately after page is rendered
 
     // Add or remove from DB
     useEffect(() => { // Only called when the "saved" array is changed
+        const updateTrails = async () => {
+            const endpoint = 'http://localhost:7003/add-to-saved';
 
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    // VERY IMPORTANT. Tells Express that. you're sending JSON. You must specify data type.
+                    // Rest API server needs a valid Content-Type header to interpret the request body message correctly.
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(saved)     // Must send a string
+                }); // saved array is changed so update db
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        if (saved.length > 0) {
+            updateTrails();
+        }
     }, [saved]);
 
     // Add to save
     const addToSaved = (trail) => {
         /*
             - "prev" gives previous value
-            - Use previous value and add movie
+            - Use previous value and add trail
         */
+       console.log("addToSaved");
         setSaved(prev => [...prev, trail]);
     }
 
     // Delete from save
     const removeFromSaved = (trailName) => { // trailId is the same as trail.name
+        console.log("removeFromSaved")
         setSaved(prev => prev.filter(trail => trail.name !== trailName));
     }
 
     // Check if saved
     const isSaved = (trailName) => {
+        console.log("isSaved");
         return saved.some(trail => trail.name === trailName);
     }
 
