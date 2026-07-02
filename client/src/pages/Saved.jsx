@@ -3,10 +3,10 @@ import { useNavigate } from "react-router";
 import '../css/index.css'
 import Header from '../partials/Header.jsx'
 import TrailCard from '../components/TrailCard.jsx'
-import { useTrailCardContext } from '../context/TrailCardContext.jsx';
+import { UseTrailCardContext } from '../context/TrailCardContext.jsx';
 
 function Saved() {
-    const { saved } = useTrailCardContext(); // Using saved trails from context
+    const { saved } = UseTrailCardContext(); // Using saved trails from context
     const navigate = useNavigate();
 
     const handleSubmit = (event) => {

@@ -13,6 +13,11 @@ const databaseName = "CMSC335DB";
 const collectionName = "trailCollection";
 const uri = process.env.MONGO_CONNECTION_STRING;
 
+// Connect mongoose client here. Do not call "mongoose.disconnect()" unless you're shutting the website down.
+// Opening/closing connections are expensive operations and you don't need to close and open connections
+// every time, especially inside routes which you'll call many times.
+mongoose.connect(process.env.MONGO_CONNECTION_STRING);
+
 /* Using Express */
 const express = require("express");
 const app = express();
@@ -52,8 +57,9 @@ app.use("/saved", saved);
 app.use("/suggestions", suggestions);
 
 app.post("/add-to-saved", (request, response) => {
-    const json = request.body; // Receiving the entire saved array from TrailCardContext.jsx
-
+    const json = request.body.saved; // Receiving the entire saved array from TrailCardContext.jsx
+    const hasBeenSaved = request.body.hasBeenSaved;
+    
     let trailArr = [];
 
     for (const id in json) {
@@ -72,48 +78,52 @@ app.post("/add-to-saved", (request, response) => {
         trailArr.push(trailObj);
     }
 
-    insertTrails(trailArr);
+    insertTrails(trailArr, hasBeenSaved);
 
-    response.send("Success");
+    response.send(json);
 });
 
-async function insertTrails(trailArr) {
-    try {
-        await mongoose.connect(process.env.MONGO_CONNECTION_STRING);
+async function insertTrails(trailArr, hasBeenSaved) {
+    try {        
+        if (hasBeenSaved == true) {
+            // Iterate through trailArr ("saved" array from TrailCardContext) and upsert into database
+            for (let i = 0; i < trailArr.length; i++) {
+                let elm = trailArr[i];
 
-        for (let i = 0; i < trailArr.length; i++) {
-            let elm = trailArr[i];
+                await Trail.updateOne(
+                    { name: elm.name },
+                    { $set:
+                        {
+                            city: elm.city,
+                            state: elm.state,
+                            country: elm.country,
+                            description: elm.description,
+                            directions: elm.directions,
+                            activities: elm.activities
+                        }
+                    },
+                    { upsert: true }
+                );
+            }
+        } else { // hasBeenSaved == false
+            // use find to get entire collection and turn this into an array (collectionArray) using find
+            // loop through collectionArray and if a document in collectionArray is not in trailArr
+            // then use the findOneAndDelete command to remove document from the database
+            const collectionArray = await Trail.find({});
 
-            const trail = new Trail({
-                id: elm.id,
-                name: elm.name,
-                city: elm.city,
-                state: elm.state,
-                country: elm.country,
-                description: elm.description,
-                directions: elm.directions,
-                activities: elm.activities,
-            });
+            for (let i = 0; i < collectionArray.length; i++) {
+                let elm = collectionArray[i];
+                let existsInTrailArr = trailArr.some(trail => trail.name === elm.name);
 
-            await Trail.updateOne(
-                { name: elm.name },
-                {$set:
-                    {
-                        city: elm.city,
-                        state: elm.state,
-                        country: elm.country,
-                        description: elm.description,
-                        directions: elm.directions,
-                        activities: elm.activities
-                    }
-                },
-                { upsert: true }
-            );
+                if (existsInTrailArr == false) {
+                    await Trail.deleteOne(
+                        { name: elm.name }
+                    );
+                }
+            }
         }
-
-        mongoose.disconnect();
-    } catch (e) {
-        console.error(e);
+    } catch (err) {
+        console.error(err);
     }
 }
 
@@ -125,11 +135,7 @@ app.get("/processremoved", (request, response) => {
 
 async function removeAll() {
     try {
-        await mongoose.connect(process.env.MONGO_CONNECTION_STRING);
-
         const result = await Trail.deleteMany({});
-
-        mongoose.disconnect();
 
         return result;
     } catch (err) {

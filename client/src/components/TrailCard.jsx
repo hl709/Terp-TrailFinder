@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { useTrailCardContext } from "../context/TrailCardContext";
+import { UseTrailCardContext } from "../context/TrailCardContext";
 
 function TrailCard({ trail, activity }) { // "activity": "hiking", "camping", etc or "any"
     const [trailLength, setTrailLength] = useState("0");
     const [description, setDescription] = useState("No description available"); // Trail description for a specific activity may differ from the trail in general
     const [rating, setRating] = useState("0.00");
 
-    const { addToSaved, removeFromSaved, isSaved } = useTrailCardContext();
+    const { addToSaved, removeFromSaved, isSaved } = UseTrailCardContext();
     const saved = isSaved(trail.name);
     
     useEffect(() => { // useEffect synchronizes component with external system
@@ -46,7 +46,7 @@ function TrailCard({ trail, activity }) { // "activity": "hiking", "camping", et
             </div>
 
             <button className={`save-btn ${saved ? "active" : ""}`} onClick={onSaveClick}>
-                Save ♡
+                ♡
             </button>
         </div>
     )

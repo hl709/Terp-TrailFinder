@@ -7,6 +7,11 @@ require("dotenv").config({
 
 const mongoose = require("mongoose");
 
+// Connect mongoose client here. Do not call "mongoose.disconnect()" unless you're shutting the website down.
+// Opening/closing connections are expensive operations and you don't need to close and open connections
+// every time, especially inside routes which you'll call many times.
+mongoose.connect(process.env.MONGO_CONNECTION_STRING);
+
 const express = require('express');
 const router = express.Router();
 
@@ -40,13 +45,8 @@ router.get("/", async (request, response) => {
 
 async function getTrails() {
     try {
-        await mongoose.connect(process.env.MONGO_CONNECTION_STRING);
-
-        // "db.collection.find" is a MongoDB method
-        // Returns all documents in the database
+        // "db.collection.find" is a MongoDB method which all documents in the database
         const trails = await Trail.find({});
-
-        mongoose.disconnect();
 
         return trails;
     } catch (err) {

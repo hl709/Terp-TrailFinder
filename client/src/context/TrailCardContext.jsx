@@ -4,11 +4,12 @@ const TrailCardContext = createContext(); // Passes TrailCard data deeply throug
 
 // useContext is a Hook and like other hooks, you can only call a Hook inside a component, not
 // inside loops or conditions.
-export const useTrailCardContext = () => useContext(TrailCardContext);
+export const UseTrailCardContext = () => useContext(TrailCardContext);
 
 // Passes data to children which is anything inside the component you rerendered
 export const TrailCardProvider = ({children}) => {
     const [saved, setSaved] = useState([]);
+    const [hasBeenSaved, setHasBeenSaved] = useState(true);
 
     // Retrieve from DB
     useEffect(() => {
@@ -50,7 +51,7 @@ export const TrailCardProvider = ({children}) => {
     useEffect(() => { // Only called when the "saved" array is changed
         const updateTrails = async () => {
             const endpoint = 'http://localhost:7003/add-to-saved';
-
+            
             try {
                 const response = await fetch(endpoint, {
                     method: 'POST',
@@ -59,16 +60,17 @@ export const TrailCardProvider = ({children}) => {
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(saved)     // Must send a string
+                    body: JSON.stringify({
+                        saved: saved,
+                        hasBeenSaved: hasBeenSaved
+                    })     // Must send a string
                 }); // saved array is changed so update db
             } catch (err) {
                 console.error(err);
             }
         }
 
-        if (saved.length > 0) {
-            updateTrails();
-        }
+        updateTrails();
     }, [saved]);
 
     // Add to save
@@ -77,19 +79,20 @@ export const TrailCardProvider = ({children}) => {
             - "prev" gives previous value
             - Use previous value and add trail
         */
-       console.log("addToSaved");
+        setHasBeenSaved(true);
         setSaved(prev => [...prev, trail]);
     }
 
     // Delete from save
-    const removeFromSaved = (trailName) => { // trailId is the same as trail.name
-        console.log("removeFromSaved")
-        setSaved(prev => prev.filter(trail => trail.name !== trailName));
+    const removeFromSaved = (trailName) => { // trailId is the same as trail.name        
+        let newArr = saved.filter(trail => trail.name !== trailName);
+        
+        setHasBeenSaved(false);
+        setSaved(newArr);
     }
 
     // Check if saved
     const isSaved = (trailName) => {
-        console.log("isSaved");
         return saved.some(trail => trail.name === trailName);
     }
 
