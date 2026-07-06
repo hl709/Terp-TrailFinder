@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from "react-router";
 import '../css/index.css'
 import Header from '../partials/Header.jsx'
+import Footer from '../partials/Footer.jsx'
 
 function Home() {
     const [country, setCountry] = useState("");
@@ -57,6 +58,7 @@ function Home() {
                     </form>
                 </div>
             </div>
+            <Footer />
         </div>
     )
 }
