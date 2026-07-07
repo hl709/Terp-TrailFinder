@@ -14,7 +14,7 @@ function Suggestions() {
     
     useEffect(() => {
         const fetchTrails = async () => { // CHANGE HERE WHEN DEPLOYING http://localhost:7003/suggestions? OR https://terp-trailfinder.onrender.com/suggestions?
-            const endpoint = `https://terp-trailfinder.onrender.com/suggestions?country=${encodeURIComponent(country)}&state=${encodeURIComponent(state)}&city=${encodeURIComponent(city)}&activity=${activity}`; // URL to send request to
+            const endpoint = `http://localhost:7003/suggestions?country=${encodeURIComponent(country)}&state=${encodeURIComponent(state)}&city=${encodeURIComponent(city)}&activity=${activity}`; // URL to send request to
             
             try {
                 const response = await fetch(endpoint); // returns a Response object with type 'cors'

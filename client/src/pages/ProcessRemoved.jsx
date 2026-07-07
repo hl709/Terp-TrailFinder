@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 function ProcessRemoved() {
     useEffect(() => {
         const deleteTrails = async () => {
-            const endpoint = 'https://terp-trailfinder.onrender.com/processremoved'; // CHANGE HERE WHEN DEPLOYING http://localhost:7003/processremoved OR https://terp-trailfinder.onrender.com/processremoved
+            const endpoint = 'http://localhost:7003/processremoved'; // CHANGE HERE WHEN DEPLOYING http://localhost:7003/processremoved OR https://terp-trailfinder.onrender.com/processremoved
 
             try {
                 const response = await fetch(endpoint); // Need to fetch

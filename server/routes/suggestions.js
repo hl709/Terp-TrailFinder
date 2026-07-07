@@ -17,7 +17,7 @@ router.get("/", async (request, response) => {
     const OPTIONS = {
         method: 'GET',
         headers: {
-            'x-rapidapi-key': 'ce7d3eb001msh889da79cb4259cdp17eed4jsn5f04e454a884',
+            'x-rapidapi-key': process.env.RAPIDAPI_KEY_STRING,
             'x-rapidapi-host': 'trailapi-trailapi.p.rapidapi.com',
             'Content-Type': 'application/json'
         }
