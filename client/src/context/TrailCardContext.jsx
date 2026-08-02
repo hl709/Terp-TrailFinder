@@ -14,7 +14,8 @@ export const TrailCardProvider = ({children}) => {
     // Retrieve from DB
     useEffect(() => {
         const fetchTrails = async () => {
-            const endpoint = 'http://localhost:7003/saved'; // CHANGE HERE WHEN DEPLOYING http://localhost:7003/saved OR https://terp-trailfinder.onrender.com/saved
+            // Vite exposes certain constants with import.meta.env object. Constants are defined as global variables.
+            const endpoint = `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/saved`;
 
             try {
                 const response = await fetch(endpoint); // Returns a Response object
@@ -50,7 +51,7 @@ export const TrailCardProvider = ({children}) => {
     // Add or remove from DB
     useEffect(() => { // Only called when the "saved" array is changed
         const updateTrails = async () => {
-            const endpoint = 'http://localhost:7003/add-to-saved'; // CHANGE HERE WHEN DEPLOYING http://localhost:7003/add-to-saved OR https://terp-trailfinder.onrender.com/add-to-saved
+            const endpoint = `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/add-to-saved`;
             
             try {
                 const response = await fetch(endpoint, {

@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 function ProcessRemoved() {
     useEffect(() => {
         const deleteTrails = async () => {
-            const endpoint = 'http://localhost:7003/processremoved'; // CHANGE HERE WHEN DEPLOYING http://localhost:7003/processremoved OR https://terp-trailfinder.onrender.com/processremoved
+            const endpoint = `${import.meta.env.VITE_REACT_APP_BACKEND_BASE_URL}/processremoved`;
 
             try {
                 const response = await fetch(endpoint); // Need to fetch
